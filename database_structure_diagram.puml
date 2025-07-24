@@ -1,0 +1,120 @@
+@startuml Database Structure Diagram
+
+!theme plain
+skinparam backgroundColor #faf8f6
+skinparam entity {
+    BackgroundColor #fff
+    BorderColor #a86b3c
+    FontColor #23190f
+}
+skinparam entityAttribute {
+    BackgroundColor #f7f7f7
+    BorderColor #7b4a1e
+    FontColor #23190f
+}
+
+title **Database Structure - Triak Coffee & Roaster**
+
+entity "users" {
+    * id : INT (PK)
+    --
+    * username : VARCHAR(50) (UNIQUE)
+    * email : VARCHAR(100) (UNIQUE)
+    * password : VARCHAR(255)
+    * role : ENUM('user', 'admin')
+    * created_at : TIMESTAMP
+}
+
+entity "coffee_types" {
+    * id : INT (PK)
+    --
+    * name : VARCHAR(100)
+    description : TEXT
+    * jenis_kopi : ENUM('Arabika', 'Robusta')
+    * roast_level : ENUM('light', 'medium', 'medium-dark', 'dark')
+    flavor_notes : TEXT
+    * profil_rasa : ENUM('Fruity', 'Chocolate', 'Nutty', 'Earthy', 'Floral', 'Citrus', 'Caramel', 'Bitter Chocolate', 'Honey', 'Spicy', 'Bitter', 'Sweet')
+    * proses : ENUM('Washed', 'Honey', 'Natural')
+    brewing_method : TEXT
+    origin : VARCHAR(100)
+    price : DECIMAL(10,2)
+    image_url : VARCHAR(255)
+    * created_at : TIMESTAMP
+}
+
+entity "user_preferences" {
+    * id : INT (PK)
+    --
+    * user_id : INT (FK)
+    jenis_kopi : ENUM('Arabika', 'Robusta')
+    metode_penyajian : ENUM('V60', 'French Press', 'Espresso', 'Tubruk', 'Cold Brew', 'Moka Pot')
+    profil_rasa : ENUM('Fruity', 'Chocolate', 'Nutty', 'Earthy', 'Floral', 'Citrus', 'Caramel', 'Bitter Chocolate', 'Honey', 'Spicy', 'Bitter', 'Sweet')
+    proses : ENUM('Washed', 'Honey', 'Natural')
+    preferred_roast : ENUM('light', 'medium', 'medium-dark', 'dark')
+    preferred_brewing : VARCHAR(100)
+    flavor_preference : TEXT
+}
+
+entity "recommendations" {
+    * id : INT (PK)
+    --
+    * user_id : INT (FK)
+    * coffee_id : INT (FK)
+    rating : INT DEFAULT 0
+    review : TEXT
+    * recommended_roast : ENUM('light', 'medium', 'medium-dark', 'dark')
+    * rule_applied : VARCHAR(255)
+    * created_at : TIMESTAMP
+}
+
+entity "proses_roasting" {
+    * roast_level : VARCHAR(50) (PK)
+    --
+    * density_level : VARCHAR(50)
+    * apparent_density : VARCHAR(50)
+    * initial_temp : INT
+    * final_temp : INT
+    * agtron : VARCHAR(50)
+}
+
+' Relationships
+users ||--o{ user_preferences : "has"
+users ||--o{ recommendations : "makes"
+coffee_types ||--o{ recommendations : "receives"
+
+note right of users
+    **Default Admin Account:**
+    username: admin
+    email: admin@triakcoffee.com
+    password: admin123 (hashed)
+    role: admin
+end note
+
+note right of coffee_types
+    **Sample Data:**
+    - Ethiopian Yirgacheffe
+    - Colombian Supremo
+    - Guatemalan Antigua
+    - Sumatra Mandheling
+    - Brazilian Santos
+    - Java Robusta
+end note
+
+note right of recommendations
+    **Rule-Based System:**
+    - 20 predefined rules
+    - Match 4 attributes (full match)
+    - Match 3 attributes (partial match)
+    - Default rule (medium roast)
+end note
+
+note right of proses_roasting
+    **Roasting Parameters:**
+    - Density Level
+    - Apparent Density (g/l)
+    - Initial Temperature (°C)
+    - Final Temperature (°C)
+    - Agtron Value
+end note
+
+@enduml 

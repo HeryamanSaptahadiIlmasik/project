@@ -1,0 +1,14 @@
+{
+  "name": "triak-coffee-roaster",
+  "version": "1.0.0",
+  "description": "Coffee recommendation system for Triak Coffee & Roaster - Static Preview",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "path": "^0.12.7"
+  }
+}

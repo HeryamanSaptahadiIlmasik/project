@@ -1,0 +1,103 @@
+<main>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Discover Your Perfect Coffee Roast</h1>
+            <p>Expert recommendations tailored to your taste preferences at Triak Coffee & Roaster</p>
+            <% if (!isLoggedIn) { %>
+                <div class="hero-buttons">
+                    <a href="/register" class="btn btn-primary">Get Started</a>
+                    <a href="/catalog" class="btn btn-secondary">Browse Coffee</a>
+                </div>
+            <% } else { %>
+                <div class="hero-buttons">
+                    <a href="<%= isAdmin ? '/admin/dashboard' : '/user/dashboard' %>" class="btn btn-primary">
+                        Go to Dashboard
+                    </a>
+                    <a href="/catalog" class="btn btn-secondary">Browse Coffee</a>
+                </div>
+            <% } %>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2>Why Choose Triak Coffee?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>Premium Quality</h3>
+                    <p>Hand-selected beans from the finest coffee regions around the world</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h3>Expert Roasting</h3>
+                    <p>Carefully crafted roast profiles to bring out the best in every bean</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Personalized Recommendations</h3>
+                    <p>AI-powered suggestions based on your taste preferences and brewing style</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h3>Fresh Delivery</h3>
+                    <p>Roasted to order and delivered fresh to your doorstep</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roast Levels Section -->
+    <section class="roast-levels">
+        <div class="container">
+            <h2>Understanding Roast Levels</h2>
+            <div class="roast-grid">
+                <div class="roast-card">
+                    <div class="roast-color light"></div>
+                    <h3>Light Roast</h3>
+                    <p>Bright, acidic, and floral. Perfect for pour-over and cold brew.</p>
+                </div>
+                <div class="roast-card">
+                    <div class="roast-color medium"></div>
+                    <h3>Medium Roast</h3>
+                    <p>Balanced flavor with moderate acidity. Great for drip coffee.</p>
+                </div>
+                <div class="roast-card">
+                    <div class="roast-color medium-dark"></div>
+                    <h3>Medium-Dark Roast</h3>
+                    <p>Rich and full-bodied with subtle oil sheen. Ideal for espresso.</p>
+                </div>
+                <div class="roast-card">
+                    <div class="roast-color dark"></div>
+                    <h3>Dark Roast</h3>
+                    <p>Bold and smoky with prominent roast flavors. Perfect for French press.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Find Your Perfect Cup?</h2>
+                <p>Join thousands of coffee lovers who trust Triak Coffee for their daily brew</p>
+                <% if (!isLoggedIn) { %>
+                    <a href="/register" class="btn btn-primary">Start Your Coffee Journey</a>
+                <% } else { %>
+                    <a href="/catalog" class="btn btn-primary">Explore Our Coffee</a>
+                <% } %>
+            </div>
+        </div>
+    </section>
+</main>

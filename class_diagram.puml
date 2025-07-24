@@ -1,0 +1,160 @@
+@startuml Class Diagram - Sistem Rekomendasi Kopi Triak Coffee
+
+title Class Diagram - Sistem Rekomendasi Kopi Triak Coffee
+
+' Users Entity
+class Users {
+  +id: int (PK)
+  +username: varchar(50)
+  +email: varchar(100)
+  +password: varchar(255)
+  +role: enum('user', 'admin')
+  +created_at: timestamp
+  --
+  +login()
+  +logout()
+  +resetPassword()
+}
+
+' UserPreferences Entity
+class UserPreferences {
+  +id: int (PK)
+  +user_id: int (FK)
+  +jenis_kopi: enum('Arabika', 'Robusta', 'Campuran')
+  +metode_penyajian: enum('V60', 'French Press', 'Tubruk', 'Espresso')
+  +profil_rasa: enum('Fruity', 'Chocolate', 'Earthy', 'Floral', 'Nutty')
+  +proses: enum('Washed', 'Natural', 'Honey')
+  +preferred_roast: enum('Light', 'Medium', 'Dark')
+  +preferred_brewing: varchar(100)
+  +flavor_preference: text
+  +created_at: timestamp
+  +updated_at: timestamp
+  --
+  +savePreferences()
+  +updatePreferences()
+  +getPreferences()
+}
+
+' CoffeeTypes Entity
+class CoffeeTypes {
+  +id: int (PK)
+  +name: varchar(100)
+  +description: text
+  +jenis_kopi: enum('Arabika', 'Robusta', 'Campuran')
+  +roast_level: enum('Light', 'Medium', 'Dark')
+  +flavor_notes: text
+  +profil_rasa: enum('Fruity', 'Chocolate', 'Earthy', 'Floral', 'Nutty')
+  +proses: enum('Washed', 'Natural', 'Honey')
+  +brewing_method: text
+  +origin: varchar(100)
+  +price: decimal(10,2)
+  +image_url: varchar(255)
+  +created_at: timestamp
+  --
+  +addCoffee()
+  +updateCoffee()
+  +deleteCoffee()
+  +getCoffeeById()
+  +getAllCoffees()
+}
+
+' RoastingRules Entity
+class RoastingRules {
+  +id: int (PK)
+  +rule_name: varchar(100)
+  +jenis_kopi: enum('Arabika', 'Robusta', 'Campuran')
+  +metode_penyajian: enum('V60', 'French Press', 'Tubruk', 'Espresso')
+  +profil_rasa: enum('Fruity', 'Chocolate', 'Earthy', 'Floral', 'Nutty')
+  +proses: enum('Washed', 'Natural', 'Honey')
+  +recommended_roast: enum('Light', 'Medium', 'Dark')
+  +roasting_notes: text
+  +is_active: tinyint(1)
+  +created_at: timestamp
+  --
+  +addRule()
+  +updateRule()
+  +deleteRule()
+  +getActiveRules()
+  +applyRule()
+}
+
+' ProsesRoasting Entity
+class ProsesRoasting {
+  +id: int (PK)
+  +density_level: varchar(50)
+  +apparent_density: varchar(50)
+  +initial_temp: int
+  +final_temp: varchar(50)
+  +agtron: varchar(50)
+  +roast_level: varchar(50)
+  +created_at: timestamp
+  --
+  +addProcess()
+  +updateProcess()
+  +deleteProcess()
+  +getProcessById()
+}
+
+' RecommendationHistory Entity
+class RecommendationHistory {
+  +id: int (PK)
+  +user_id: int (FK)
+  +coffee_id: int (FK)
+  +jenis_kopi: varchar(50)
+  +metode_penyajian: varchar(50)
+  +profil_rasa: varchar(50)
+  +proses: varchar(50)
+  +recommended_roast: enum('Light', 'Medium', 'Dark')
+  +rule_applied: varchar(100)
+  +created_at: timestamp
+  --
+  +saveHistory()
+  +getUserHistory()
+  +getAllHistory()
+  +deleteHistory()
+}
+
+' Recommendations Entity
+class Recommendations {
+  +id: int (PK)
+  +user_id: int (FK)
+  +coffee_id: int (FK)
+  +rating: int
+  +review: text
+  +recommended_roast: enum('Light', 'Medium', 'Dark')
+  +rule_applied: varchar(100)
+  +created_at: timestamp
+  --
+  +addRecommendation()
+  +updateRecommendation()
+  +deleteRecommendation()
+  +getUserRecommendations()
+}
+
+' Relationships
+Users ||--o{ UserPreferences : "memiliki"
+Users ||--o{ RecommendationHistory : "memiliki riwayat"
+Users ||--o{ Recommendations : "memberikan"
+
+CoffeeTypes ||--o{ Recommendations : "direkomendasikan"
+CoffeeTypes ||--o{ RecommendationHistory : "direferensikan"
+
+RoastingRules ||--o{ CoffeeTypes : "mengikuti aturan"
+UserPreferences }o--|| RoastingRules : "menggunakan"
+
+' Notes
+note right of RoastingRules
+  * roasting_temperature dan roasting_time
+    telah dihapus sesuai implementasi
+  * Menggunakan rule-based system
+    dengan forward chaining
+end note
+
+note right of RecommendationHistory
+  * Menyimpan hasil rekomendasi
+    untuk setiap user
+  * Terhubung dengan CoffeeTypes
+    untuk referensi kopi
+end note
+
+@enduml 

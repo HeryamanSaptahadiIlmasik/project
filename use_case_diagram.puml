@@ -1,0 +1,64 @@
+@startuml Use Case Diagram - Sistem Rekomendasi Kopi Triak Coffee
+
+!define RECTANGLE class
+
+title Use Case Diagram - Sistem Rekomendasi Kopi Triak Coffee
+
+left to right direction
+
+actor "User" as user
+actor "Admin" as admin
+
+rectangle "Sistem Rekomendasi Kopi Triak Coffee" {
+  usecase "Login" as UC1
+  usecase "Logout" as UC2
+  
+  ' User Use Cases
+  usecase "Sistem Rekomendasi" as UC3
+  usecase "Riwayat Rekomendasi" as UC4
+  usecase "Lihat Detail Proses Roasting" as UC5
+  usecase "Atur Preferensi" as UC6
+  usecase "Lihat Katalog Kopi" as UC7
+  usecase "Lihat Detail Kopi" as UC8
+  
+  ' Admin Use Cases
+  usecase "Mengelola Users" as UC9
+  usecase "Mengelola Aturan Rekomendasi" as UC10
+  usecase "Mengelola Data Coffee" as UC11
+  usecase "Mengelola Proses Roasting" as UC12
+  usecase "Mengelola Riwayat Rekomendasi" as UC13
+  usecase "Lihat Statistik" as UC14
+  usecase "Reset Password User" as UC15
+}
+
+' User associations
+user --> UC1
+user --> UC2
+user --> UC3
+user --> UC4
+user --> UC5
+user --> UC6
+user --> UC7
+user --> UC8
+
+' Admin associations
+admin --> UC1
+admin --> UC2
+admin --> UC9
+admin --> UC10
+admin --> UC11
+admin --> UC12
+admin --> UC13
+admin --> UC14
+admin --> UC15
+
+' Extend relationships (optional features)
+UC4 ..> UC5 : <<extend>>
+UC7 ..> UC8 : <<extend>>
+UC9 ..> UC15 : <<extend>>
+
+' Include relationships (mandatory features)
+UC3 ..> UC6 : <<include>>
+UC10 ..> UC11 : <<include>>
+
+@enduml 

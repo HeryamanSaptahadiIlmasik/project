@@ -1,0 +1,217 @@
+@startuml Recommendation Workflow Diagram
+
+!theme plain
+skinparam backgroundColor #faf8f6
+skinparam activity {
+    BackgroundColor #fff
+    BorderColor #a86b3c
+    FontColor #23190f
+}
+skinparam activityDiamond {
+    BackgroundColor #fff
+    BorderColor #7b4a1e
+    FontColor #23190f
+}
+skinparam note {
+    BackgroundColor #f7f7f7
+    BorderColor #a86b3c
+    FontColor #23190f
+}
+
+title **Workflow Sistem Rekomendasi Kopi - Triak Coffee & Roaster**
+
+start
+
+:Kasir/Staff login ke sistem;
+:Masuk ke User Dashboard;
+:Klik "Buat Rekomendasi";
+
+partition "**INPUT PREFERENSI PELANGGAN**" {
+    :Form Input Preferensi;
+    :Pilih Jenis Kopi;
+    if (Jenis Kopi?) then (Arabika)
+        :Set jenis_kopi = "Arabika";
+    else (Robusta)
+        :Set jenis_kopi = "Robusta";
+    endif
+    
+    :Pilih Metode Penyajian;
+    if (Metode?) then (V60)
+        :Set metode_penyajian = "V60";
+    elseif (French Press) then
+        :Set metode_penyajian = "French Press";
+    elseif (Espresso) then
+        :Set metode_penyajian = "Espresso";
+    elseif (Tubruk) then
+        :Set metode_penyajian = "Tubruk";
+    elseif (Cold Brew) then
+        :Set metode_penyajian = "Cold Brew";
+    else (Moka Pot)
+        :Set metode_penyajian = "Moka Pot";
+    endif
+    
+    :Pilih Profil Rasa;
+    if (Profil Rasa?) then (Fruity)
+        :Set profil_rasa = "Fruity";
+    elseif (Chocolate) then
+        :Set profil_rasa = "Chocolate";
+    elseif (Nutty) then
+        :Set profil_rasa = "Nutty";
+    elseif (Earthy) then
+        :Set profil_rasa = "Earthy";
+    elseif (Floral) then
+        :Set profil_rasa = "Floral";
+    elseif (Citrus) then
+        :Set profil_rasa = "Citrus";
+    elseif (Caramel) then
+        :Set profil_rasa = "Caramel";
+    elseif (Bitter Chocolate) then
+        :Set profil_rasa = "Bitter Chocolate";
+    elseif (Honey) then
+        :Set profil_rasa = "Honey";
+    elseif (Spicy) then
+        :Set profil_rasa = "Spicy";
+    elseif (Bitter) then
+        :Set profil_rasa = "Bitter";
+    else (Sweet)
+        :Set profil_rasa = "Sweet";
+    endif
+    
+    :Pilih Proses;
+    if (Proses?) then (Washed)
+        :Set proses = "Washed";
+    elseif (Honey) then
+        :Set proses = "Honey";
+    else (Natural)
+        :Set proses = "Natural";
+    endif
+}
+
+partition "**PROSES RULE-BASED SYSTEM**" {
+    :Mulai Rule-Based Processing;
+    :Input: jenis_kopi, metode_penyajian, profil_rasa, proses;
+    
+    :Cek 20 Aturan Rekomendasi;
+    
+    if (Match 4 atribut lengkap?) then (ya)
+        :Terapkan Rule Lengkap;
+        :Set rule_applied = "Rule X (Full Match)";
+        note right
+            **Contoh Full Match:**
+            Input: Arabika + V60 + Fruity + Washed
+            Rule 1: Arabika + V60 + Fruity + Washed → Light
+            Hasil: Light Roast
+        end note
+    else (tidak)
+        if (Match 3 atribut?) then (ya)
+            :Terapkan Partial Match;
+            :Set rule_applied = "Partial Match: Rule X";
+            note right
+                **Contoh Partial Match:**
+                Input: Arabika + V60 + Fruity + Honey
+                Rule 1: Arabika + V60 + Fruity + Washed → Light
+                Match: 3 atribut (Arabika, V60, Fruity)
+                Hasil: Light Roast
+            end note
+        else (tidak)
+            :Terapkan Default Rule;
+            :Set rule_applied = "Default Rule";
+            :Set recommended_roast = "medium";
+            note right
+                **Default Rule:**
+                Jika tidak ada match sama sekali
+                Default: Medium Roast
+            end note
+        endif
+    endif
+    
+    :Tentukan Roast Level;
+    if (Roast Level?) then (light)
+        :Set recommended_roast = "light";
+    elseif (medium) then
+        :Set recommended_roast = "medium";
+    elseif (medium-dark) then
+        :Set recommended_roast = "medium-dark";
+    else (dark)
+        :Set recommended_roast = "dark";
+    endif
+}
+
+partition "**PENCARIAN KOPI YANG SESUAI**" {
+    :Query Database Coffee Types;
+    :Filter berdasarkan roast_level = recommended_roast;
+    :Hitung Match Score;
+    
+    note right
+        **Match Score Algorithm:**
+        
+        - Roast level match + jenis_kopi match = 100
+        - Roast level match = 90
+        - Jenis kopi match = 80
+        - Profil rasa match = 70
+        - Proses match = 60
+        - Default = 50
+        
+        Sort by: Match Score DESC, Price ASC
+        Limit: 6 kopi
+    end note
+    
+    :Tampilkan 6 Rekomendasi Kopi;
+    :Tampilkan detail kopi (nama, origin, price, flavor_notes);
+}
+
+partition "**PANDUAN ROASTING**" {
+    :Query Proses Roasting;
+    :Filter berdasarkan roast_level = recommended_roast;
+    
+    if (Data roasting ditemukan?) then (ya)
+        :Tampilkan Panduan Roasting;
+        note right
+            **Informasi Roasting:**
+            
+            - Density Level
+            - Apparent Density (g/l)
+            - Suhu Awal (°C)
+            - Suhu Akhir (°C)
+            - Nilai Agtron
+            - Rentang Kematangan
+        end note
+    else (tidak)
+        :Tampilkan pesan "Data roasting tidak tersedia";
+    endif
+}
+
+partition "**SIMPAN REKOMENDASI**" {
+    if (Simpan rekomendasi?) then (ya)
+        :Insert ke tabel recommendations;
+        :Set user_id = current_user_id;
+        :Set coffee_id = selected_coffee_id;
+        :Set recommended_roast = roast_level;
+        :Set rule_applied = rule_name;
+        :Set created_at = current_timestamp;
+        :Tampilkan pesan sukses;
+    else (tidak)
+        :Skip penyimpanan;
+    endif
+}
+
+partition "**RATING & REVIEW**" {
+    if (Beri rating & review?) then (ya)
+        :Form Rating & Review;
+        :Input rating (1-5 bintang);
+        :Input review text;
+        :Update tabel recommendations;
+        :Set rating = user_rating;
+        :Set review = user_review;
+        :Tampilkan pesan sukses;
+    else (tidak)
+        :Skip rating & review;
+    endif
+}
+
+:Redirect ke User Dashboard;
+:Tampilkan riwayat rekomendasi terbaru;
+
+stop
+
+@enduml 

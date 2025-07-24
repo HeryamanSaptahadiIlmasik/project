@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Triak Coffee & Roaster' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/">
+                    <i class="fas fa-coffee"></i>
+                    <span>Triak Coffee</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/catalog" class="nav-link">Coffee Catalog</a>
+                <% if (isLoggedIn) { %>
+                    <% if (isAdmin) { %>
+                        <a href="/admin/dashboard" class="nav-link">Admin Dashboard</a>
+                    <% } else { %>
+                        <a href="/user/dashboard" class="nav-link">My Dashboard</a>
+                    <% } %>
+                    <a href="/logout" class="nav-link logout">Logout</a>
+                <% } else { %>
+                    <a href="/login" class="nav-link">Login</a>
+                    <a href="/register" class="nav-link register">Register</a>
+                <% } %>
+            </div>
+            <div class="nav-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <%- body %>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-coffee"></i> Triak Coffee & Roaster</h3>
+                    <p>Crafting the perfect cup, one roast at a time.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Coffee</h4>
+                        <a href="/catalog">Coffee Catalog</a>
+                        <a href="#">Roast Levels</a>
+                        <a href="#">Brewing Guide</a>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Account</h4>
+                        <% if (isLoggedIn) { %>
+                            <a href="<%= isAdmin ? '/admin/dashboard' : '/user/dashboard' %>">Dashboard</a>
+                        <% } else { %>
+                            <a href="/login">Login</a>
+                            <a href="/register">Register</a>
+                        <% } %>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Contact</h4>
+                        <p><i class="fas fa-envelope"></i> info@triakcoffee.com</p>
+                        <p><i class="fas fa-phone"></i> (555) 123-4567</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Triak Coffee & Roaster. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/script.js"></script>
+</body>
+</html>

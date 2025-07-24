@@ -1,0 +1,231 @@
+@startuml Admin Workflow Diagram
+
+!theme plain
+skinparam backgroundColor #faf8f6
+skinparam activity {
+    BackgroundColor #fff
+    BorderColor #a86b3c
+    FontColor #23190f
+}
+skinparam activityDiamond {
+    BackgroundColor #fff
+    BorderColor #7b4a1e
+    FontColor #23190f
+}
+skinparam note {
+    BackgroundColor #f7f7f7
+    BorderColor #a86b3c
+    FontColor #23190f
+}
+
+title **Admin Dashboard Workflow - Triak Coffee & Roaster**
+
+start
+
+:Admin login ke sistem;
+:Redirect ke Admin Dashboard;
+
+partition "**ADMIN DASHBOARD OVERVIEW**" {
+    :Tampilkan Statistik Utama;
+    note right
+        **Dashboard Statistics:**
+        
+        - Total Users (non-admin)
+        - Total Coffee Types
+        - Total Reviews
+        - Average Rating
+        - Recent Users (5 terbaru)
+        - Popular Coffees (5 teratas)
+        - Recent Reviews (5 terbaru)
+    end note
+    
+    :Tampilkan Sidebar Menu;
+    note left
+        **Admin Menu:**
+        
+        1. Dashboard
+        2. Kelola Kopi
+        3. Kelola Aturan
+        4. Kelola User
+        5. Kelola Proses Roasting
+        6. Analytics
+        7. Logout
+    end note
+}
+
+partition "**KELOLA KOPI WORKFLOW**" {
+    :Klik "Kelola Kopi";
+    :Tampilkan daftar semua kopi;
+    
+    if (Aksi?) then (Tambah Kopi)
+        :Form Tambah Kopi;
+        :Input nama kopi;
+        :Input deskripsi;
+        :Pilih jenis kopi (Arabika/Robusta);
+        :Pilih roast level (light/medium/medium-dark/dark);
+        :Input flavor notes;
+        :Pilih profil rasa;
+        :Pilih proses (Washed/Honey/Natural);
+        :Input brewing method;
+        :Input origin;
+        :Input price;
+        :Upload image URL;
+        
+        :Validasi data;
+        if (Data valid?) then (ya)
+            :Insert ke tabel coffee_types;
+            :Tampilkan pesan sukses;
+            :Redirect ke daftar kopi;
+        else (tidak)
+            :Tampilkan error;
+            :Kembali ke form;
+        endif
+        
+    elseif (Edit Kopi) then
+        :Pilih kopi dari daftar;
+        :Load data kopi ke form;
+        :Edit data kopi;
+        :Update tabel coffee_types;
+        :Tampilkan pesan sukses;
+        
+    else (Hapus Kopi)
+        :Pilih kopi dari daftar;
+        :Konfirmasi hapus;
+        if (Konfirmasi?) then (ya)
+            :Delete dari tabel coffee_types;
+            :Cascade delete dari recommendations;
+            :Tampilkan pesan sukses;
+        else (tidak)
+            :Cancel hapus;
+        endif
+    endif
+}
+
+partition "**KELOLA ATURAN WORKFLOW**" {
+    :Klik "Kelola Aturan";
+    :Tampilkan daftar 20 aturan;
+    
+    if (Aksi?) then (Tambah Aturan)
+        :Form Tambah Aturan;
+        :Pilih jenis kopi;
+        :Pilih metode penyajian;
+        :Pilih profil rasa;
+        :Pilih proses;
+        :Pilih roast level hasil;
+        :Simpan ke database;
+        
+    elseif (Edit Aturan) then
+        :Pilih aturan dari daftar;
+        :Load data aturan ke form;
+        :Edit kondisi dan hasil;
+        :Update database;
+        
+    else (Hapus Aturan)
+        :Pilih aturan dari daftar;
+        :Konfirmasi hapus;
+        if (Konfirmasi?) then (ya)
+            :Delete aturan;
+        else (tidak)
+            :Cancel hapus;
+        endif
+    endif
+}
+
+partition "**KELOLA USER WORKFLOW**" {
+    :Klik "Kelola User";
+    :Tampilkan daftar semua user (non-admin);
+    
+    if (Aksi?) then (Lihat Detail)
+        :Pilih user dari daftar;
+        :Tampilkan profil user;
+        :Tampilkan riwayat rekomendasi;
+        :Tampilkan preferensi user;
+        
+    else (Hapus User)
+        :Pilih user dari daftar;
+        :Konfirmasi hapus;
+        if (Konfirmasi?) then (ya)
+            :Delete user dari tabel users;
+            :Cascade delete user_preferences;
+            :Cascade delete recommendations;
+            :Tampilkan pesan sukses;
+        else (tidak)
+            :Cancel hapus;
+        endif
+    endif
+}
+
+partition "**KELOLA PROSES ROASTING WORKFLOW**" {
+    :Klik "Kelola Proses Roasting";
+    :Tampilkan daftar proses roasting;
+    
+    if (Aksi?) then (Tambah Proses)
+        :Form Tambah Proses;
+        :Input roast level;
+        :Input density level;
+        :Input apparent density (g/l);
+        :Input suhu awal (°C);
+        :Input suhu akhir (°C);
+        :Input nilai agtron;
+        :Simpan ke database;
+        
+    elseif (Edit Proses) then
+        :Pilih proses dari daftar;
+        :Load data proses ke form;
+        :Edit parameter roasting;
+        :Update database;
+        
+    else (Lihat Detail)
+        :Pilih proses dari daftar;
+        :Tampilkan detail lengkap proses roasting;
+    endif
+}
+
+partition "**ANALYTICS WORKFLOW**" {
+    :Klik "Analytics";
+    
+    :Query Statistik User;
+    note right
+        **User Statistics:**
+        
+        - Total users
+        - New users (bulan ini)
+        - Active users
+        - User growth chart
+    end note
+    
+    :Query Statistik Kopi;
+    note right
+        **Coffee Statistics:**
+        
+        - Total coffee types
+        - Distribution by roast level
+        - Distribution by origin
+        - Average price
+    end note
+    
+    :Query Statistik Review;
+    note right
+        **Review Statistics:**
+        
+        - Total reviews
+        - Average rating
+        - Rating distribution
+        - Most reviewed coffees
+    end note
+    
+    :Tampilkan Popular Coffees;
+    :Tampilkan Recent Reviews;
+    :Tampilkan Charts & Graphs;
+}
+
+partition "**LOGOUT WORKFLOW**" {
+    :Klik "Logout";
+    :Destroy session;
+    :Clear session data;
+    :Redirect ke homepage;
+}
+
+stop
+
+@enduml 
